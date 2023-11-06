@@ -1206,7 +1206,10 @@ type SelectItemProps = (
   | {
       value?: undefined;
       asBtn: true;
-      onSelect: () => void;
+      handleSelect: (
+        event: React.PointerEvent | React.KeyboardEvent,
+        onOpenChange: (close: boolean) => void
+      ) => void;
     }
 ) &
   SelectItemGeneric;
@@ -1230,15 +1233,14 @@ const SelectItem = React.forwardRef<SelectItemElement, SelectItemProps>(
     );
     const textId = useId();
 
-    const handleSelect = () => {
+    const handleSelect = (e: React.PointerEvent | React.KeyboardEvent) => {
       if (disabled) return;
 
-      context.onOpenChange(false);
-
       if (!props.asBtn) {
+        context.onOpenChange(false);
         context.onValueChange(value);
       } else {
-        props.onSelect?.();
+        props.handleSelect?.(e, context.onOpenChange);
       }
     };
 
@@ -1297,7 +1299,7 @@ const SelectItem = React.forwardRef<SelectItemElement, SelectItemProps>(
             onKeyDown={composeEventHandlers(itemProps.onKeyDown, (event) => {
               const isTypingAhead = contentContext.searchRef?.current !== '';
               if (isTypingAhead && event.key === ' ') return;
-              if (SELECTION_KEYS.includes(event.key)) handleSelect();
+              if (SELECTION_KEYS.includes(event.key)) handleSelect(event);
               // prevent page scroll if using the space key to select an item
               if (event.key === ' ') event.preventDefault();
             })}

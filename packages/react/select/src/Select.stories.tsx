@@ -1100,9 +1100,11 @@ export const ItemsAddedOnLater = () => {
 
 export const SelectWithButton = () => {
   const items = ['14', '15'];
+  const [clicked, setClicked] = React.useState(false);
 
   return (
     <div style={{ display: 'flex', gap: 20, padding: 50 }}>
+      {clicked ? 'has clicked' : 'has Not lcicked'}
       {POSITIONS.map((position) => (
         <Label key={position}>
           Choose a number:
@@ -1127,8 +1129,10 @@ export const SelectWithButton = () => {
                   ))}
                   <Select.Item
                     className={itemClass()}
-                    onSelect={() => {
-                      alert('yo dawg');
+                    handleSelect={(e, setOpen) => {
+                      e.preventDefault();
+                      setOpen(false);
+                      setClicked(true);
                     }}
                     asBtn
                   >
