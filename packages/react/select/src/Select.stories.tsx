@@ -1098,6 +1098,59 @@ export const ItemsAddedOnLater = () => {
   );
 };
 
+export const SelectWithButton = () => {
+  const items = ['14', '15'];
+
+  return (
+    <div style={{ display: 'flex', gap: 20, padding: 50 }}>
+      {POSITIONS.map((position) => (
+        <Label key={position}>
+          Choose a number:
+          <Select.Root defaultValue="1">
+            <Select.Trigger className={triggerClass()}>
+              <Select.Value />
+              <Select.Icon />
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Content className={contentClass()} position={position} sideOffset={5}>
+                <Select.Viewport className={viewportClass()}>
+                  {items.map((i) => (
+                    <Select.Item className={itemClass()} value={i} key={i}>
+                      <Select.ItemText>
+                        {i}
+                        <span aria-hidden> 👍</span>
+                      </Select.ItemText>
+                      <Select.ItemIndicator className={indicatorClass()}>
+                        <TickIcon />
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                  <Select.Item
+                    className={itemClass()}
+                    onSelect={() => {
+                      alert('yo dawg');
+                    }}
+                    asBtn
+                  >
+                    <Select.ItemText>
+                      Meow
+                      <span aria-hidden> 👍</span>
+                    </Select.ItemText>
+                    <Select.ItemIndicator className={indicatorClass()}>
+                      <TickIcon />
+                    </Select.ItemIndicator>
+                  </Select.Item>
+                </Select.Viewport>
+                <Select.Arrow />
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
+        </Label>
+      ))}
+    </div>
+  );
+};
+
 const triggerClass = css({
   display: 'flex',
   alignItems: 'center',

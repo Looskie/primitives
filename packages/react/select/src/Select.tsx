@@ -1191,17 +1191,31 @@ const [SelectItemContextProvider, useSelectItemContext] =
   createSelectContext<SelectItemContextValue>(ITEM_NAME);
 
 type SelectItemElement = React.ElementRef<typeof Primitive.div>;
-interface SelectItemProps extends PrimitiveDivProps {
-  value: string;
-  disabled?: boolean;
-  textValue?: string;
-}
+
+type SelectItemGeneric = Partial<{
+  disabled: boolean;
+  textValue: string;
+}> &
+  PrimitiveDivProps;
+
+type SelectItemProps = (
+  | {
+      value: string;
+      asBtn?: false;
+    }
+  | {
+      value?: undefined;
+      asBtn: true;
+      onSelect: () => void;
+    }
+) &
+  SelectItemGeneric;
 
 const SelectItem = React.forwardRef<SelectItemElement, SelectItemProps>(
   (props: ScopedProps<SelectItemProps>, forwardedRef) => {
     const {
       __scopeSelect,
-      value,
+      value = '',
       disabled = false,
       textValue: textValueProp,
       ...itemProps
@@ -1217,15 +1231,20 @@ const SelectItem = React.forwardRef<SelectItemElement, SelectItemProps>(
     const textId = useId();
 
     const handleSelect = () => {
-      if (!disabled) {
+      if (disabled) return;
+
+      context.onOpenChange(false);
+
+      if (!props.asBtn) {
         context.onValueChange(value);
-        context.onOpenChange(false);
+      } else {
+        props.onSelect?.();
       }
     };
 
-    if (value === '') {
+    if (value === '' && !props.asBtn) {
       throw new Error(
-        'A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.'
+        'A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder. If you want there to be a button, pass the asBtn prop.'
       );
     }
 
